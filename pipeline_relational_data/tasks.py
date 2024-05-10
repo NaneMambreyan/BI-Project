@@ -20,6 +20,38 @@ def create_db_connection(server, database, username, password):
         print(f"Failed to connect to database: {e}")
         return None
 
+
+def check_table_existence(connection, table_name):
+    """
+    Checks whether a table exists in the database.
+
+    :param connection: Database connection object
+    :param table_name: Name of the table to check existence for
+    :return: True if the table exists, False otherwise
+    """
+    try:
+        cursor = connection.cursor()
+        # SQL query to check table existence
+        sql = f"SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{table_name}'"
+        cursor.execute(sql)
+        # Fetch the first row (if any) from the result set
+        row = cursor.fetchone()
+        # If row is not None, table exists
+        if row:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print(f"Error checking table existence: {e}")
+        return False
+
+
+
+
+
+
+
+
 def create_table(connection, create_table_sql):
     """
     Creates a table in the database based on the provided SQL command.
@@ -35,6 +67,10 @@ def create_table(connection, create_table_sql):
     except Exception as e:
         connection.rollback()
         print(f"Failed to create table: {e}")
+
+
+
+        
 
 def ingest_data(connection, data, table_name):
     """
@@ -58,3 +94,29 @@ def ingest_data(connection, data, table_name):
     except Exception as e:
         connection.rollback()
         print(f"Failed to ingest data: {e}")
+
+
+
+
+'''
+def drop_table(connection, table_name):
+    """
+    Drops a table from the database.
+
+    :param connection: Database connection object
+    :param table_name: Name of the table to drop
+    """
+    try:
+        cursor = connection.cursor()
+        # SQL query to drop the table
+        sql = f"DROP TABLE {table_name}"
+        cursor.execute(sql)
+        connection.commit()
+        print(f"Table '{table_name}' dropped successfully.")
+    except Exception as e:
+        connection.rollback()
+        print(f"Failed to drop table: {e}")
+'''
+
+
+
