@@ -1,122 +1,71 @@
-import pyodbc
+import config
+import os
 import pandas as pd
+import pyodbc
+import sys
 
-def create_db_connection(server, database, username, password):
-    """
-    Establishes a database connection using given credentials.
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(parent_dir)
 
-    :param server: Server address
-    :param database: Database name
-    :param username: User name
-    :param password: Password
-    :return: Connection object or None
-    """
-    try:
-        connection_string = f'DRIVER={{SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}'
-        connection = pyodbc.connect(connection_string)
-        print("Database connection successful.")
-        return connection
-    except Exception as e:
-        print(f"Failed to connect to database: {e}")
-        return None
+import utils
 
+def connect_db_create_cursor(database_conf_name):
+    # Call to read the configuration file
+    db_conf = utils.get_sql_config(config.sql_server_config, database_conf_name)
+    # Create a connection string for SQL Server
+    
+    #db_conn_str = 'Driver={};Server={};Database={};UID={};PWD={};'.format(*db_conf)
 
-def check_table_existence(connection, table_name):
-    """
-    Checks whether a table exists in the database.
+    #Windows users can try this version and comment the upper line
+    db_conn_str = 'Driver={};Server={};Database={};Trusted_Connection={};'.format(*db_conf)
 
-    :param connection: Database connection object
-    :param table_name: Name of the table to check existence for
-    :return: True if the table exists, False otherwise
-    """
-    try:
-        cursor = connection.cursor()
-        # SQL query to check table existence
-        sql = f"SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{table_name}'"
-        cursor.execute(sql)
-        # Fetch the first row (if any) from the result set
-        row = cursor.fetchone()
-        # If row is not None, table exists
-        if row:
-            return True
-        else:
-            return False
-    except Exception as e:
-        print(f"Error checking table existence: {e}")
-        return False
+    # Connect to the server and to the desired database
+    db_conn = pyodbc.connect(db_conn_str)
+    # Create a Cursor class instance for executing T-SQL statements
+    db_cursor = db_conn.cursor()
+    return db_cursor
 
 
+def load_query(query_name, task_type):
+    input_dir = config.choosing_input_dir(task_type)   
+    print(input_dir) 
+    for script in os.listdir(input_dir):
+        if query_name in script:
+            with open(input_dir + '/' + script, 'r') as script_file:
+                sql_script = script_file.read()
+            break
+    return sql_script
 
 
+def create_table(cursor):
+    create_table_script = load_query('relational_db_table_creation', 'create_table')
+    cursor.execute(create_table_script)
+    cursor.commit()
+    print("The tables have been created in the ORDERS_RELATIONAL_DB database")
+ 
+
+def insert_into_table(cursor, table_name, source_data):
+    # Read the excel table
+    df = pd.read_excel(source_data, sheet_name=table_name, header=0)
+    df = df.fillna("null")
+    insert_into_table_script = load_query('insert_into_{}'.format(table_name), "insert_data")
+
+    # Populate a table in sql server
+    for index, row in df.iterrows():
+        # Extract column names from the DataFrame and convert them to a list
+        columns = list(df.columns)
+
+        # Prepare the parameter values based on the column names
+        params = [row[column] for column in columns]
+
+        cursor.execute(insert_into_table_script, *params)
+        cursor.commit()
+
+    print(f"{len(df)} rows have been inserted into the {table_name} table")
 
 
-
-
-def create_table(connection, create_table_sql):
-    """
-    Creates a table in the database based on the provided SQL command.
-
-    :param connection: Database connection object
-    :param create_table_sql: SQL string to create the table
-    """
-    try:
-        cursor = connection.cursor()
-        cursor.execute(create_table_sql)
-        connection.commit()
-        print("Table created successfully.")
-    except Exception as e:
-        connection.rollback()
-        print(f"Failed to create table: {e}")
-
-
-
-        
-
-def ingest_data(connection, data, table_name):
-    """
-    Ingests data into a specified table from a DataFrame.
-
-    :param connection: Database connection object
-    :param data: Pandas DataFrame containing data to ingest
-    :param table_name: Name of the table to ingest data into
-    """
-    try:
-        cursor = connection.cursor()
-        # Prepare insert statement dynamically based on DataFrame columns
-        placeholders = ', '.join(['?'] * len(data.columns))
-        columns = ', '.join(data.columns)
-        sql = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
-        # Execute insert for each row in DataFrame
-        for row in data.itertuples(index=False, name=None):
-            cursor.execute(sql, row)
-        connection.commit()
-        print(f"Data ingested successfully into {table_name}.")
-    except Exception as e:
-        connection.rollback()
-        print(f"Failed to ingest data: {e}")
-
-
-
-
-'''
-def drop_table(connection, table_name):
-    """
-    Drops a table from the database.
-
-    :param connection: Database connection object
-    :param table_name: Name of the table to drop
-    """
-    try:
-        cursor = connection.cursor()
-        # SQL query to drop the table
-        sql = f"DROP TABLE {table_name}"
-        cursor.execute(sql)
-        connection.commit()
-        print(f"Table '{table_name}' dropped successfully.")
-    except Exception as e:
-        connection.rollback()
-        print(f"Failed to drop table: {e}")
-'''
-
-
-
+def add_table_constraints(cursor):
+    add_constraint_script = load_query('relational_db_add_PK_FK_constraints', 'add_constraint')
+    cursor.execute(add_constraint_script)
+    cursor.commit()
+    print("Add constraints on the tables of ORDERS_RELATIONAL_DB database")

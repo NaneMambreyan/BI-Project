@@ -15,7 +15,7 @@ DROP TABLE IF EXISTS Territories;
 CREATE TABLE Categories (
     CategoryID INT NOT NULL,
     CategoryName NVARCHAR(40),
-    Description NVARCHAR(250)
+    Description NVARCHAR(100)
 );
 
 CREATE TABLE Customers (
@@ -103,17 +103,20 @@ CREATE TABLE Shippers (
 );
 
 CREATE TABLE Suppliers (
-    SupplierID INT NOT NULL,
-    ContactTitle NVARCHAR(50),
-    Address NVARCHAR(60),
-    City NVARCHAR(40),
-    Region NVARCHAR(30),
-    PostalCode NVARCHAR(30),
-    Country NVARCHAR(30),
-    Phone NVARCHAR(30),
-    Fax NVARCHAR(30),
-    HomePage NVARCHAR(MAX)
+    SupplierID INT PRIMARY KEY,
+    CompanyName VARCHAR(255),
+    ContactName VARCHAR(255),
+    ContactTitle VARCHAR(255),
+    Address VARCHAR(255),
+    City VARCHAR(255),
+    Region VARCHAR(255),
+    PostalCode VARCHAR(10),
+    Country VARCHAR(255),
+    Phone VARCHAR(15),
+    Fax VARCHAR(15),
+    HomePage VARCHAR(255)
 );
+
 
 CREATE TABLE Territories (
     TerritoryID NVARCHAR(20) NOT NULL,

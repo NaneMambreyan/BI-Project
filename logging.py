@@ -1,32 +1,33 @@
 import logging
-import colorlog
+import os
+import datetime
 
-def setup_logger():
-    # Create a logger object
-    logger = logging.getLogger(_name_)
-    logger.setLevel(logging.INFO)
+# Create logs directory if it doesn't exist
+log_dir = os.path.join(os.getcwd(), 'logs')
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
 
-    # Define log format with color
-    formatter = colorlog.ColoredFormatter(
-        '%(log_color)s%(asctime)s - %(levelname)s - %(message)s',
-        log_colors={
-            'DEBUG':    'cyan',
-            'INFO':     'green',
-            'WARNING':  'yellow',
-            'ERROR':    'red',
-            'CRITICAL': 'red,bg_white',
-        }
-    )
+# Configure logging from logging.conf
+logging.config.fileConfig('logging.conf')
 
-    # Define file handler
-    file_handler = logging.FileHandler('logs/logs_relational_data_pipeline.txt')
-    file_handler.setLevel(logging.INFO)
-    file_handler.setFormatter(formatter)
+# Get the logger
+logger = logging.getLogger('RelationalDataFlow')
 
-    # Add file handler to logger
-    logger.addHandler(file_handler)
+# Configure logging
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S')
 
-    return logger
+# Create a logger
+logger = logging.getLogger('RelationalDataFlow')
 
-# Create logger
-logger = setup_logger()
+# Create a file handler
+log_file = os.path.join(log_dir, 'logs_relational_data_pipeline.txt')
+file_handler = logging.FileHandler(log_file)
+
+# Set the format for the file handler
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+
+# Add the file handler to the logger
+logger.addHandler(file_handler)
