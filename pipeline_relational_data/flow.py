@@ -1,4 +1,3 @@
-# Import the logging module
 import logging
 import logging.config
 
@@ -9,11 +8,21 @@ import utils
 
 
 # Get the configuration file path
-config_file_path = os.path.join((os.path.dirname(os.getcwd())), 'logging.conf')
+config_file_path = os.path.join(os.getcwd(), 'logging.conf')
 
 # Configure logging from logging.py
 from logging import getLogger
-logging.config.fileConfig(config_file_path)
+#logging.config.fileConfig(config_file_path, defaults = {'LOG_FILE_PATH':'C:\\Users\\USER\\Desktop\\BI-Project\\logs\\logs_relational_data_pipeline.txt'})
+
+
+# Matter of change
+log_file = r'C:\\Users\\USER\\Desktop\\BI-Project\\logs\\logs_relational_data_pipeline.txt'
+
+# Configure logging from logging.py
+logging.config.fileConfig(
+        config_file_path, 
+        defaults={'LOGFILE': log_file}
+    )
 
 logger = getLogger(__name__)
 # Get the current and parent directory
@@ -22,7 +31,6 @@ parent_directory = os.path.dirname(current_directory)
 
 # Specify the path to the Excel file
 excel_file_path = os.path.join(parent_directory, "raw_data_source.xlsx")
-print('------------------excel path\n', excel_file_path)
 
 class RelationalDataFlow:
     def __init__(self):
@@ -55,8 +63,3 @@ class RelationalDataFlow:
         # Log execution completion
         logger.info(f"Execution completed for execution_id: {self.execution_id}")
 
-if __name__ == '__main__':
-    # Create an instance of RelationalDataFlow
-    flow = RelationalDataFlow()
-    # Execute the tasks in the right order
-    flow.exec()

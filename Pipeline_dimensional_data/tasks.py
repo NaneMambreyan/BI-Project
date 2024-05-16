@@ -62,9 +62,9 @@ def update_table(cursor, db_rel, schema_rel, table_rel, db_dim, schema_dim, tabl
         cursor.execute(formatted_update_table_script)
         cursor.commit()
 
-#create_table(connect_db_create_cursor('Database2'))
+create_table(connect_db_create_cursor('Database2'))
 
-'''
+
 update_table(connect_db_create_cursor('Database2'), 'ORDERS_RELATIONAL_DB','dbo','Categories','ORDERS_DIMENSIONAL_DB', 'dbo', 'DimCategories')
 update_table(connect_db_create_cursor('Database2'), 'ORDERS_RELATIONAL_DB','dbo','Shippers','ORDERS_DIMENSIONAL_DB', 'dbo', 'DimShippers')
 update_table(connect_db_create_cursor('Database2'), 'ORDERS_RELATIONAL_DB','dbo','Territories','ORDERS_DIMENSIONAL_DB', 'dbo', 'DimTerritories')
@@ -73,6 +73,6 @@ update_table(connect_db_create_cursor('Database2'), 'ORDERS_RELATIONAL_DB','dbo'
 update_table(connect_db_create_cursor('Database2'), 'ORDERS_RELATIONAL_DB','dbo','Suppliers','ORDERS_DIMENSIONAL_DB', 'dbo', 'DimSuppliers')
 update_table(connect_db_create_cursor('Database2'), 'ORDERS_RELATIONAL_DB','dbo','Employees','ORDERS_DIMENSIONAL_DB', 'dbo', 'DimEmployees')
 update_table(connect_db_create_cursor('Database2'), 'ORDERS_RELATIONAL_DB','dbo','Products','ORDERS_DIMENSIONAL_DB', 'dbo', 'DimProducts')
-'''
 
-update_table(cursor=connect_db_create_cursor('Database2'), db_rel='ORDERS_RELATIONAL_DB',schema_rel='dbo', table_rel='', db_dim='ORDERS_DIMENSIONAL_DB', schema_dim='dbo', table_dim='FactOrders')
+
+#update_table(cursor=connect_db_create_cursor('Database2'), db_rel='ORDERS_RELATIONAL_DB',schema_rel='dbo', table_rel='', db_dim='ORDERS_DIMENSIONAL_DB', schema_dim='dbo', table_dim='FactOrders')

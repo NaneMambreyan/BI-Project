@@ -1,6 +1,5 @@
 USE [ORDERS_DIMENSIONAL_DB];
 
-
 DROP TABLE IF EXISTS [dbo].[DimCategories];
 DROP TABLE IF EXISTS [dbo].[DimShippers];
 DROP TABLE IF EXISTS [dbo].[DimCustomers];
@@ -13,6 +12,7 @@ DROP TABLE IF EXISTS [dbo].[DimProducts_SCD4_History];
 DROP TABLE IF EXISTS [dbo].[DimEmployees];
 DROP TABLE IF EXISTS [dbo].[DimEmployees_SCD4_History];
 DROP TABLE IF EXISTS [dbo].[FactOrders];
+
 
 --------------------------------------- DimCategories SCD1 with delete -------------------------------------
 CREATE TABLE [dbo].[DimCategories] (
@@ -151,8 +151,7 @@ CREATE TABLE DimProducts_SCD4_History (
 );
 
 
-
---------------------------------------- DimEmployees SCD4 with delete -------------------------------------
+--------------------------------------- DimEmployees SCD4  -------------------------------------
 CREATE TABLE DimEmployees (
     EmployeeID INT IDENTITY(1,1) NOT NULL,
     BusinessKey INT NOT NULL,
@@ -272,7 +271,7 @@ FROM [ORDERS_RELATIONAL_DB].[dbo].Orders o
 JOIN [ORDERS_RELATIONAL_DB].[dbo].OrderDetails od ON o.OrderID = od.OrderID;
 
 
-/*
+
 -- Primary Key (PK) Constraints
 
 ALTER TABLE DimCategories ADD CONSTRAINT PK_DimCategories PRIMARY KEY (CategoryID);
@@ -287,20 +286,18 @@ ALTER TABLE FactOrders ADD CONSTRAINT PK_FactOrders PRIMARY KEY (OrderID, Produc
 
 
 
-
+/*
 -- Foreign Key (FK) Constraints
-ALTER TABLE DimEmployees ADD CONSTRAINT FK_DimEmployees_ReportsTo FOREIGN KEY (ReportsTo) REFERENCES DimEmployees(EmployeeID);
-ALTER TABLE DimProducts ADD CONSTRAINT FK_DimProducts_SupplierID FOREIGN KEY (SupplierID) REFERENCES DimSuppliers(SupplierID);
-ALTER TABLE DimProducts ADD CONSTRAINT FK_DimProducts_CategoryID FOREIGN KEY (CategoryID) REFERENCES DimCategories(CategoryID);
-ALTER TABLE DimTerritories ADD CONSTRAINT FK_DimTerritories_RegionID FOREIGN KEY (RegionID) REFERENCES DimRegion(RegionID);
 ALTER TABLE FactOrders ADD CONSTRAINT FK_FactOrders_DimProducts FOREIGN KEY (ProductID) REFERENCES DimProducts(ProductID);
---ALTER TABLE FactOrders ADD CONSTRAINT FK_FactOrders_DimCustomers FOREIGN KEY (CustomerID) REFERENCES DimCustomers(CustomerID);
+ALTER TABLE FactOrders ADD CONSTRAINT FK_FactOrders_DimCustomers FOREIGN KEY (CustomerID) REFERENCES DimCustomers(CustomerID);
 ALTER TABLE FactOrders ADD CONSTRAINT FK_FactOrders_DimEmployees FOREIGN KEY (EmployeeID) REFERENCES DimEmployees(EmployeeID);
 ALTER TABLE FactOrders ADD CONSTRAINT FK_FactOrders_DimShippers FOREIGN KEY (ShipVia) REFERENCES DimShippers(ShipperID);
---ALTER TABLE FactOrders ADD CONSTRAINT FK_FactOrders_DimTerritories FOREIGN KEY (TerritoryID) REFERENCES DimTerritories(TerritoryID);
+ALTER TABLE FactOrders ADD CONSTRAINT FK_FactOrders_DimTerritories FOREIGN KEY (TerritoryID) REFERENCES FactOrders(TerritoryID);
 
 
 
-
-
+ALTER TABLE DimEmployees ADD CONSTRAINT FK_DimEmployees_DimEmployees FOREIGN KEY (ReportsTo) REFERENCES DimEmployees(EmployeeID);
+ALTER TABLE DimProducts ADD CONSTRAINT FK_DimProducts_DimCategories FOREIGN KEY (CategoryID) REFERENCES DimCategories(CategoryID);
+ALTER TABLE DimProducts ADD CONSTRAINT FK_DimProducts_DimSuppliers FOREIGN KEY (SupplierID) REFERENCES DimSuppliers(SupplierID);
+ALTER TABLE DimTerritories ADD CONSTRAINT FK_DimTerritories_DimRegion FOREIGN KEY (RegionID) REFERENCES DimRegion(RegionID);
 */

@@ -78,6 +78,7 @@ CREATE TABLE Orders (
     TerritoryID NVARCHAR(20)
 );
 
+
 CREATE TABLE Products (
     ProductID INT NOT NULL,
     ProductName NVARCHAR(40),
