@@ -271,8 +271,6 @@ JOIN [ORDERS_RELATIONAL_DB].[dbo].OrderDetails od ON o.OrderID = od.OrderID;
 
 
 
-
-
 -- Primary Key (PK) Constraints
 
 ALTER TABLE DimCategories ADD CONSTRAINT PK_DimCategories PRIMARY KEY (CategoryID);
