@@ -1,5 +1,5 @@
-USE [ORDERS_DIMENSIONAL_DB];
-
+USE [ORDERS_DIMENSIONAL_DB]
+GO
 
 
 DROP TABLE IF EXISTS [dbo].[DimCategories];
@@ -21,8 +21,8 @@ CREATE TABLE [dbo].[DimCategories] (
 	BusinessKey int NOT NULL,
 	CategoryName NVARCHAR(40),
     Description NVARCHAR(100)
-        );
-
+        )
+GO
 
 
 
@@ -32,7 +32,8 @@ CREATE TABLE [dbo].[DimShippers] (
 	BusinessKey int NOT NULL,
 	CompanyName NVARCHAR(50),
     Phone NVARCHAR(30)
-        );
+        )
+GO
 
 
 
@@ -53,8 +54,8 @@ CREATE TABLE [dbo].[DimCustomers] (
 	ValidFrom INT NULL,
 	ValidTo INT NULL,
 	IsCurrent BIT NULL
-) ON [PRIMARY];
-
+) ON [PRIMARY]
+GO
 
 
 
@@ -66,7 +67,7 @@ CREATE TABLE [dbo].[DimRegion](
 	RegionDescription NVARCHAR(50),
 	RegionDescription_prior NVARCHAR(50),
 	RegionDescription_prior_ValidTo char(8) NULL,
-        );
+        )
 
 
 
@@ -78,8 +79,8 @@ CREATE TABLE [dbo].[DimTerritories](
     TerritoryDescription_prior NVARCHAR(50),
     TerritoryDescription_prior_ValidTo char(8) NULL,
     RegionID INT
-);
-
+)
+GO
 
 
 
@@ -99,7 +100,7 @@ CREATE TABLE DimSuppliers (
     Fax VARCHAR(15),
     HomePage VARCHAR(255),
 );
-
+GO
 
 CREATE TABLE DimSuppliers_SCD4_History (
     HistoryID INT IDENTITY(1,1) NOT NULL,
@@ -134,7 +135,7 @@ CREATE TABLE DimProducts (
     ReorderLevel INT,
     Discontinued BIT
 );
-
+GO
 
 CREATE TABLE DimProducts_SCD4_History (
     HistoryID INT IDENTITY(1,1) NOT NULL,
@@ -153,7 +154,7 @@ CREATE TABLE DimProducts_SCD4_History (
 
 
 
---------------------------------------- DimEmployees SCD4 with delete -------------------------------------
+--------------------------------------- DimEmployees SCD4  -------------------------------------
 CREATE TABLE DimEmployees (
     EmployeeID INT IDENTITY(1,1) NOT NULL,
     BusinessKey INT NOT NULL,
@@ -172,9 +173,9 @@ CREATE TABLE DimEmployees (
     Extension NVARCHAR(10),
     Notes NVARCHAR(MAX),
     ReportsTo INT,
-    PhotoPath NVARCHAR(MAX)
+    PhotoPath NVARCHAR(MAX),
 );
-
+GO
 
 CREATE TABLE DimEmployees_SCD4_History (
     HistoryID INT IDENTITY(1,1) NOT NULL,
@@ -199,11 +200,10 @@ CREATE TABLE DimEmployees_SCD4_History (
 );
 
 
-
 --------------------------- FactOrders Snapshot -------------------------
 CREATE TABLE FactOrders (
-    OrderID INT,
-    ProductID INT,
+    OrderID INT NOT NULL,
+    ProductID INT NOT NULL,
     CustomerID VARCHAR(10),
     EmployeeID INT,
     OrderDate DATETIME,
@@ -295,7 +295,7 @@ ALTER TABLE FactOrders ADD CONSTRAINT FK_FactOrders_DimProducts FOREIGN KEY (Pro
 ALTER TABLE FactOrders ADD CONSTRAINT FK_FactOrders_DimEmployees FOREIGN KEY (EmployeeID) REFERENCES DimEmployees(EmployeeID);
 ALTER TABLE FactOrders ADD CONSTRAINT FK_FactOrders_DimShippers FOREIGN KEY (ShipVia) REFERENCES DimShippers(ShipperID);
 --ALTER TABLE FactOrders ADD CONSTRAINT FK_FactOrders_DimTerritories FOREIGN KEY (TerritoryID) REFERENCES DimTerritories(TerritoryID);
-
+GO
 
 
 

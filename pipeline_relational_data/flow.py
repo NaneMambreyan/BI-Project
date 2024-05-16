@@ -9,7 +9,7 @@ import utils
 
 
 # Get the configuration file path
-config_file_path = os.path.join((os.getcwd()), 'logging.conf')
+config_file_path = os.path.join((os.path.dirname(os.getcwd())), 'logging.conf')
 
 # Configure logging from logging.py
 from logging import getLogger
@@ -21,7 +21,8 @@ current_directory = os.getcwd()
 parent_directory = os.path.dirname(current_directory)
 
 # Specify the path to the Excel file
-excel_file_path = os.path.join(current_directory, "raw_data_source.xlsx")
+excel_file_path = os.path.join(parent_directory, "raw_data_source.xlsx")
+print('------------------excel path\n', excel_file_path)
 
 class RelationalDataFlow:
     def __init__(self):
