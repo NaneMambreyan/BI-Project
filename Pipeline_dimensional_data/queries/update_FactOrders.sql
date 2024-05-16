@@ -1,34 +1,8 @@
-
-CREATE TABLE OrderDetails (
-    OrderID INT NOT NULL,
-    ProductID INT NOT NULL,
-    UnitPrice MONEY,
-    Quantity INT,
-    Discount FLOAT
-);
-
-CREATE TABLE Orders (
-    OrderID INT NOT NULL,
-    CustomerID NVARCHAR(20),
-    EmployeeID INT,
-    OrderDate DATE,
-    RequiredDate DATE,
-    ShippedDate DATE,
-    ShipVia INT,
-    Freight MONEY,
-    ShipName NVARCHAR(40),
-    ShipAddress NVARCHAR(60),
-    ShipCity NVARCHAR(40),
-    ShipRegion NVARCHAR(25),
-    ShipPostalCode NVARCHAR(30),
-    ShipCountry NVARCHAR(30),
-    TerritoryID NVARCHAR(20)
-);
 MERGE INTO {db_dim}.{schema_dim}.{table_dim} AS Target
 USING (
     SELECT 
         S1.[OrderID] AS SrcOrderID,
-        S1.[ProductID] AS SrcProductID,
+        S2.[ProductID] AS SrcProductID,
         S1.[CustomerID] AS SrcCustomerID,
         S1.[EmployeeID] AS SrcEmployeeID,
         S1.[OrderDate] AS SrcOrderDate,
@@ -111,3 +85,6 @@ WHEN NOT MATCHED THEN
         Source.SrcQuantity,
         Source.SrcDiscount
     );
+
+select * from FactOrders
+select * from ORDERS_RELATIONAL_DB.dbo.OrderDetails

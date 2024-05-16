@@ -363,3 +363,31 @@ GO
 SELECT * FROM DimProducts_SCD4_History;
 GO
 
+
+USE ORDERS_DIMENSIONAL_DB
+-- DimCategories
+SELECT * FROM DimCategories;
+
+-- DimShippers
+SELECT * FROM DimShippers;
+
+-- DimCustomers
+SELECT * FROM DimCustomers;
+
+-- DimRegion
+SELECT * FROM DimRegion;
+
+-- DimTerritories
+SELECT * FROM DimTerritories;
+
+-- DimSuppliers
+SELECT * FROM DimSuppliers;
+
+-- DimProducts
+SELECT * FROM DimProducts;
+
+-- DimEmployees
+SELECT * FROM DimEmployees;
+
+-- FactOrders
+SELECT * FROM FactOrders;
